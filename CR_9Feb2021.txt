@@ -1,0 +1,79 @@
+US Program
+
+New/Updates for coupons by 7-11
+
+21882
+22118
+22106
+21836
+22156
+22368
+21968
+
+New BPOs
+
+BPO22546
+BPO22498
+
+https://github.com/reactorcx/rcx-sei-config/issues/2187
+
+BPO Updates
+
+BPO21914
+BPO21908
+BPO21910
+BPO21912
+BPO21750
+BPO21123
+
+https://github.com/reactorcx/rcx-sei-config/issues/2185
+https://github.com/reactorcx/rcx-sei-config/issues/2189
+https://github.com/reactorcx/rcx-sei-config/issues/2186
+
+New US Streak
+
+US 2021P2 NAS Point Streak Threshold Qty 3
+US 2021P2 NAS Point Streak Threshold Qty 5
+US 2021P2 NAS Point Streak Threshold Qty 7
+US 2021P2 NAS Point Streak Threshold Qty 10
+
+https://github.com/reactorcx/rcx-sei-config/issues/2167
+
+New US Rule
+
+US 2021P2 Velo AR
+
+https://github.com/reactorcx/rcx-sei-config/issues/2168
+
+
+CA Program
+
+New CA Streak
+
+BPO22436
+BPO22438
+BPO22440
+BPO22442
+
+BPO22476
+BPO22478
+BPO22480
+BPO22482
+
+https://github.com/reactorcx/rcx-sei-config/issues/2170
+https://github.com/reactorcx/rcx-sei-config/issues/2169
+
+
+NIFI Flows
+
+rcx-sei-poke
+rcx-sei-streaks-start-notifications
+rcx-sei-streak-end-notifications
+
+https://github.com/reactorcx/rcx-sei-config/issues/2170
+https://github.com/reactorcx/rcx-sei-config/issues/2169
+
+US Changes=13
+CA Changes=8
+NIFI changes = 3
+Total Changes=24

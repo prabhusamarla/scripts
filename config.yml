@@ -1,0 +1,75 @@
+envs:
+  fileNamePattern: &fileNamePattern ^(Activity_(.+)_(\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])_\d{6}))
+  localVolumeFolder: &localVolumeFolder data
+volumePath: $ENV:VOLUME_PATH
+activities:
+  - create-temp-file:
+      location: $ENV:DATA_PATH
+      localVolumeFolder: temp
+      fileNamePattern: *fileNamePattern
+      tempFileNamePattern: ^(temp_Activity_(.+)_(\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])_\d{6}))
+      dateGroup: 3
+      dateFormat: 'YYYYMMDD_HHmmss'
+      convertToUnix: true
+      primaryFileOptional: true
+      noheader: true
+      delimiter: "|"
+      pgpPassphrase: $ENV:PGP_PASSPHRASE
+      pgpDecryption: false
+
+  - import-file:
+      sql: import-file.sql
+      pgpPassphrase: $ENV:PGP_PASSPHRASE
+      pgpDecryption: false
+      files:
+      - location: $ENV:DATA_PATH
+        localVolumeFolder: *localVolumeFolder
+        fileNamePattern: ^(temp_Activity_(.+)_(\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])_\d{6}))
+        dateGroup: 3
+        dateFormat: 'YYYYMMDD_HHmmss'
+        primary: true
+        errorThresholdPercent: 50
+        tablename: activities
+        schema: schema
+        shellImport: true
+        keys:
+          - externalTxnId
+          - LoyaltyIDNumber
+        csvConfig:
+          noheader: false
+          headers:
+            - LoyaltyIDNumber
+            - couponCode
+            - EngagementDate
+            - externalTxnId
+          delimiter:
+            - "|"
+          colParser:
+            EngagementDate: dateFormatter
+
+  - activity-runner:
+      groupId: $ENV:KAFKA_CONSUMER_GROUP_ID
+      clientId: $ENV:KAFKA_PRODUCER_ID
+      eventSourceTopic: $ENV:KAFKA_EVENT_SOURCE_QUEUE
+      activityResultTopic: $ENV:KAFKA_ACTIVITY_RESULT_QUEUE
+      consumerTimeoutInMs: $ENV:KAFKA_CONSUMER_TIMEOUT_IN_MS
+      template: activity-template.txt
+
+  - execute-sql:
+      ignoreErrorThreshold: true
+      sqlFile: create-result-table.sql
+
+  - export-error-table:
+      resultPath: $ENV:RESULT_PATH
+      ignoreErrorThreshold: true
+      tablename: activities_result
+      handbackFile: handback-result.csv
+
+  - archive-s3-files:
+      archivePath: $ENV:ARCHIVE_PATH
+      location: $ENV:DATA_PATH
+
+  - multi-runner:
+      location: $ENV:DATA_PATH
+      localVolumeFolder: *localVolumeFolder
+      fileNamePattern: *fileNamePattern
